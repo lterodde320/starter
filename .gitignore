@@ -12,3 +12,9 @@ count.txt
 .vinxi
 __unconfig*
 todos.json
+
+/generated/prisma
+
+# SQLite database files
+*.db
+*.db-journal
