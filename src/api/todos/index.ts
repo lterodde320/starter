@@ -8,8 +8,9 @@ export const getTodos = createServerFn({ method: 'GET' }).handler(async () => {
   return allTodos
 })
 
-export const createTodo = createServerFn({ method: 'POST' }).handler(async ({ data }) => {
-  const { title } = data as { title: string }
+export const createTodo = createServerFn({ method: 'POST' }).handler(async (ctx) => {
+  const data = ctx.data as unknown as { title: string }
+  const { title } = data
   
   if (!title || typeof title !== 'string') {
     throw new Error('Title is required')
@@ -19,8 +20,9 @@ export const createTodo = createServerFn({ method: 'POST' }).handler(async ({ da
   return newTodo[0]
 })
 
-export const updateTodo = createServerFn({ method: 'POST' }).handler(async ({ data }) => {
-  const { id, title, completed } = data as { id: number; title?: string; completed?: boolean }
+export const updateTodo = createServerFn({ method: 'POST' }).handler(async (ctx) => {
+  const data = ctx.data as unknown as { id: number; title?: string; completed?: boolean }
+  const { id, title, completed } = data
   
   if (isNaN(id)) {
     throw new Error('Invalid ID')
@@ -43,8 +45,9 @@ export const updateTodo = createServerFn({ method: 'POST' }).handler(async ({ da
   return updated[0]
 })
 
-export const deleteTodo = createServerFn({ method: 'POST' }).handler(async ({ data }) => {
-  const { id } = data as { id: number }
+export const deleteTodo = createServerFn({ method: 'POST' }).handler(async (ctx) => {
+  const data = ctx.data as unknown as { id: number }
+  const { id } = data
   
   if (isNaN(id)) {
     throw new Error('Invalid ID')

@@ -16,8 +16,8 @@ interface Todo {
   id: number
   title: string
   completed: boolean
-  createdAt: string
-  updatedAt: string
+  createdAt: Date
+  updatedAt: Date
 }
 
 export const Route = createFileRoute('/')({
@@ -49,7 +49,7 @@ function App() {
     if (!newTodo.trim()) return
 
     try {
-      const todo = await createTodo({ data: { title: newTodo } })
+      const todo = await createTodo({ data: { title: newTodo } as any })
       setTodos([todo, ...todos])
       setNewTodo('')
     } catch (error) {
@@ -59,7 +59,7 @@ function App() {
 
   async function toggleTodo(id: number, completed: boolean) {
     try {
-      const updated = await updateTodo({ data: { id, completed: !completed } })
+      const updated = await updateTodo({ data: { id, completed: !completed } as any })
       setTodos(todos.map((t) => (t.id === id ? updated : t)))
     } catch (error) {
       console.error('Failed to toggle todo:', error)
@@ -68,7 +68,7 @@ function App() {
 
   async function deleteTodoItem(id: number) {
     try {
-      await deleteTodo({ data: { id } })
+      await deleteTodo({ data: { id } as any })
       setTodos(todos.filter((t) => t.id !== id))
     } catch (error) {
       console.error('Failed to delete todo:', error)
