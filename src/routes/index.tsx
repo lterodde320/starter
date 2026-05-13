@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
+import { getTodos, createTodo, updateTodo, deleteTodo } from '@/api/todos'
 
 interface Todo {
   id: number
@@ -25,8 +26,7 @@ function App() {
 
   async function fetchTodos() {
     try {
-      const res = await fetch('/api/todos')
-      const data = await res.json()
+      const data = await getTodos()
       setTodos(data)
     } catch (error) {
       console.error('Failed to fetch todos:', error)
@@ -40,16 +40,9 @@ function App() {
     if (!newTodo.trim()) return
 
     try {
-      const res = await fetch('/api/todos', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: newTodo }),
-      })
-      if (res.ok) {
-        const todo = await res.json()
-        setTodos([todo, ...todos])
-        setNewTodo('')
-      }
+      const todo = await createTodo({ data: { title: newTodo } })
+      setTodos([todo, ...todos])
+      setNewTodo('')
     } catch (error) {
       console.error('Failed to add todo:', error)
     }
@@ -57,28 +50,17 @@ function App() {
 
   async function toggleTodo(id: number, completed: boolean) {
     try {
-      const res = await fetch(`/api/todos/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ completed: !completed }),
-      })
-      if (res.ok) {
-        const updated = await res.json()
-        setTodos(todos.map((t) => (t.id === id ? updated : t)))
-      }
+      const updated = await updateTodo({ data: { id, completed: !completed } })
+      setTodos(todos.map((t) => (t.id === id ? updated : t)))
     } catch (error) {
       console.error('Failed to toggle todo:', error)
     }
   }
 
-  async function deleteTodo(id: number) {
+  async function deleteTodoItem(id: number) {
     try {
-      const res = await fetch(`/api/todos/${id}`, {
-        method: 'DELETE',
-      })
-      if (res.ok) {
-        setTodos(todos.filter((t) => t.id !== id))
-      }
+      await deleteTodo({ data: { id } })
+      setTodos(todos.filter((t) => t.id !== id))
     } catch (error) {
       console.error('Failed to delete todo:', error)
     }
@@ -131,7 +113,7 @@ function App() {
                   <Button
                     variant="destructive"
                     size="sm"
-                    onClick={() => deleteTodo(todo.id)}
+                    onClick={() => deleteTodoItem(todo.id)}
                   >
                     Delete
                   </Button>
