@@ -19,7 +19,7 @@ export const createTodo = createServerFn({ method: 'POST' }).handler(async ({ da
   return newTodo[0]
 })
 
-export const updateTodo = createServerFn({ method: 'PUT' }).handler(async ({ data }) => {
+export const updateTodo = createServerFn({ method: 'POST' }).handler(async ({ data }) => {
   const { id, title, completed } = data as { id: number; title?: string; completed?: boolean }
   
   if (isNaN(id)) {
@@ -43,7 +43,7 @@ export const updateTodo = createServerFn({ method: 'PUT' }).handler(async ({ dat
   return updated[0]
 })
 
-export const deleteTodo = createServerFn({ method: 'DELETE' }).handler(async ({ data }) => {
+export const deleteTodo = createServerFn({ method: 'POST' }).handler(async ({ data }) => {
   const { id } = data as { id: number }
   
   if (isNaN(id)) {
